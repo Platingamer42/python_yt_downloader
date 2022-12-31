@@ -1,16 +1,21 @@
 from __future__ import unicode_literals
 import os
-import youtube_dl
+import yt_dlp
 
 class Downloader:
     def __init__(self):
-        self. ydl_opts = {
-            'format': 'bestaudio/best',
-            'outtmpl': os.path.dirname(os.path.realpath(__file__)) + '/output/%(title)s.%(ext)s',
+        self._format = 'bestaudio/best'
+        self._outtmpl = os.path.dirname(os.path.realpath(__file__)) + '/output/%(title)s.%(ext)s'
+        self._key = 'FFmpegExtractAudio'
+        self._prefferedcodec = 'mp3'
+        self._prefferedquality = '256'
+        self.ydl_opts = {
+            'format': self._format,
+            'outtmpl': self._outtmpl,
             'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '256',
+                'key': self._key,
+                'preferredcodec': self._prefferedcodec,
+                'preferredquality': self._prefferedquality,
             }],
         }
         
@@ -26,7 +31,7 @@ class Downloader:
         return splitted
 
     def download_song(self, url):  
-        with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:
+        with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
             try: 
                 ydl.download(url)
                 return "download successfull"
@@ -37,7 +42,7 @@ class Downloader:
         title = " "
         uploader = " "
         thumbnail_link = " "
-        with youtube_dl.YoutubeDL(self.ydl_opts) as ydl:
+        with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
             try: 
                 print("URLS: " + url)
                 infosearched = ydl.extract_info(url, download=False)

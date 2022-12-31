@@ -11,7 +11,7 @@ class GUI:
 
         self.root = Tk()
 
-        self.root.title("YouTube converter V0.8")
+        self.root.title("YouTube converter V0.9")
         self.root.geometry('500x500')
 
         menubar = Menu(self.root)
@@ -40,9 +40,6 @@ class GUI:
         # self.canv.image = img
         # self.canv.create_image(0,0,anchor=NW,image=img)
 
-        self.root.grid_rowconfigure(0, weight=1)
-        self.root.grid_columnconfigure(0, weight=1)
-
         self._create_upper_frame()
         self._fill_upper_frame()
 
@@ -56,6 +53,7 @@ class GUI:
         
         self.frame1.grid_rowconfigure(2, weight=1)
         self.frame1.grid_columnconfigure(0, weight=1)
+        self.frame1.grid_columnconfigure(1, weight=1)
         self.frame1.grid_columnconfigure(2, weight=1)
 
     
