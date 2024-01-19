@@ -1,4 +1,9 @@
-from tkinter import *
+try:
+    import tkinter as tk
+    from tkinter import scrolledtext
+except: # Python2 compatible
+    import Tkinter as tk
+    from Tkinter import scrolledtext
 from turtle import bgcolor
 from Downloader import Downloader
 import os
@@ -6,18 +11,19 @@ import urllib
 from PIL import Image, ImageTk
 
 class GUI:
+    _version_str = "V0.9"
     def __init__(self):
         self.init_downloader()
 
-        self.root = Tk()
+        self.root = tk.Tk()
 
-        self.root.title("YouTube converter V0.9")
-        self.root.geometry('500x500')
+        self.root.title("YouTube converter " + self._version_str)
+        self.root.geometry('355x230')
 
-        menubar = Menu(self.root)
+        menubar = tk.Menu(self.root)
         self.root.config(menu=menubar)
 
-        subMenu = Menu(menubar)
+        subMenu = tk.Menu(menubar)
         subMenu.add_command(label="Download from .txt file", command=self.download_from_file)
         subMenu.add_command(label="EXIT", command=self.exit)
         menubar.add_cascade(label="Options", menu=subMenu)
@@ -25,20 +31,10 @@ class GUI:
 
         #for resizing reasons, we open this as normal Image now.
         self.background_image = Image.open(os.path.dirname(os.path.realpath(__file__)) + "\\images\\background.jpg")
-        self.background_label = Label(self.root, image=ImageTk.PhotoImage(self.background_image))
+        self.background_label = tk.Label(self.root, image=ImageTk.PhotoImage(self.background_image))
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
         self.background_label.image = self.background_image
-        self.background_label.bind('<Configure>', self.on_resize) # on_resize will be executed whenever label l is resized
-
-
-        # self.canv = Canvas(self.frame3, width=128, height=72, bg="white")
-        # self.canv.pack(side="top")
-        # img = Image.open(url)
-        # img.thumbnail((128,72))
-        # img.save(url)
-        # img = ImageTk.PhotoImage(Image.open(url))
-        # self.canv.image = img
-        # self.canv.create_image(0,0,anchor=NW,image=img)
+        self.background_label.bind('<Configure>', self.on_resize) # on_resize will be executed whenever label l is resized0
 
         self._create_upper_frame()
         self._fill_upper_frame()
@@ -48,46 +44,48 @@ class GUI:
 
     def _create_upper_frame(self):
         #upper frame (buttons and input)
-        self.frame1 = Frame(master=self.root, bg="#FFCFC9")
-        self.frame1.grid(row=0, rowspan=3, columnspan=3, padx=(10, 10), pady=(10, 10))
+        self.frame1 = tk.Frame(master=self.root, bg="#FFCFC9")
+        self.frame1.grid(row=0, columnspan=3, padx=10, pady=10)
         
-        self.frame1.grid_rowconfigure(2, weight=1)
-        self.frame1.grid_columnconfigure(0, weight=1)
-        self.frame1.grid_columnconfigure(1, weight=1)
-        self.frame1.grid_columnconfigure(2, weight=1)
+        self.frame1.rowconfigure(0, weight=1)
+        self.frame1.columnconfigure(0, weight=1)
 
+        #self.root.rowconfigure(0,1)
+        #self.root.columnconfigure(0,1)
     
     def _fill_upper_frame(self):
         #input label
-        self.lbl_input = Label(master=self.frame1, text="Link: ")
+        self.lbl_input = tk.Label(master=self.frame1, text="Link: ")
         self.lbl_input.grid(row=0, column=0)
         
         #txtlabel
-        self.txt = Entry(master=self.frame1, width=50)
+        self.txt = tk.Entry(master=self.frame1, width=50)
         self.txt.insert(10, "https://www.youtube.com/watch?v=hTWKbfoikeg")
         self.txt.grid(row=0, column=1, columnspan=2)
 
         #buttons
-        self.btn_download = Button(self.frame1, text="DOWNLOAD", command=self.btn_download_clicked)
+        self.btn_download = tk.Button(self.frame1, text="DOWNLOAD", command=self.btn_download_clicked)
         self.btn_download.grid(row=1, column=1)
 
-        self.btn_fetch_info = Button(self.frame1, text = "FETCH INFO", command=self.btn_fetch_info_clicked)
+        self.btn_fetch_info = tk.Button(self.frame1, text = "FETCH INFO", command=self.btn_fetch_info_clicked)
         self.btn_fetch_info.grid(row=2, column=1)
 
     def _create_lower_frame(self):
         # #lower frame (information)
-        self.frame2 = Frame(master=self.root, bg="#FFCFC9")
-        self.frame2.grid(row=3, rowspan=3)
+        self.frame2 = tk.Frame(master=self.root, bg="#FFCFC9")
+        self.frame2.grid(row=1)
+        self.frame2.rowconfigure(0, weight=1)
+        self.frame2.columnconfigure(0, weight=1)
         
     def _fill_lower_frame(self):
         #info
-        self.lbl_uploader = Label(self.frame2, text="Uploader: ----------", width=50)
+        self.lbl_uploader = tk.Label(self.frame2, text="Uploader: ----------", width=50)
         self.lbl_uploader.grid(row=0)
 
-        self.lbl_title = Label(self.frame2, text="Title: ----------", width=50)
+        self.lbl_title = tk.Label(self.frame2, text="Title: ----------", width=50)
         self.lbl_title.grid(row=1)
 
-        self.lbl_debug = Label(self.frame2, text="DEBUG: ", width = 50)
+        self.lbl_debug = tk.Label(self.frame2, text="DEBUG: ", width = 50)
         self.lbl_debug.grid(row=2)
 
         self._create_thumbnail_frame()
@@ -95,8 +93,10 @@ class GUI:
 
     def _create_thumbnail_frame(self):
         # #thumbnail-frame
-        self.frame3 = Frame(master=self.frame2, bg="black")
-        self.frame3.grid(row=4)
+        self.frame3 = tk.Frame(master=self.frame2, bg="black")
+        self.frame3.grid(row=3)
+        self.frame3.rowconfigure(0, weight=1)
+        self.frame3.columnconfigure(0, weight=1)
 
     def _fill_thumbnail_frame(self):
         self.update_thumbnail(os.path.dirname(os.path.realpath(__file__)) + "\\images\\icon.png")
@@ -111,14 +111,14 @@ class GUI:
         self.background_label.config(image=self.background_label.image)
 
     def update_thumbnail(self, url):
-        self.canv = Canvas(self.frame3, width=128, height=72, bg="white")
+        self.canv = tk.Canvas(self.frame3, width=128, height=72, bg="white")
         self.canv.grid(row=0)
         img = Image.open(url)
         img.thumbnail((128,72))
         img.save(url)
         img = ImageTk.PhotoImage(Image.open(url))
         self.canv.image = img
-        self.canv.create_image(0,0,anchor=NW,image=img)
+        self.canv.create_image(0,0,anchor=tk.NW,image=img)
 
     def init_downloader(self):
         self.downloader = Downloader()

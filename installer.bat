@@ -1,4 +1,4 @@
 @echo off
-pip install --upgrade youtube_dl
+pip install --upgrade yt_dlp
 pip install --upgrade pillow
 pause

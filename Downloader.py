@@ -6,12 +6,15 @@ class Downloader:
     def __init__(self):
         self._format = 'bestaudio/best'
         self._outtmpl = os.path.dirname(os.path.realpath(__file__)) + '/output/%(title)s.%(ext)s'
+        self._download_archive = os.path.dirname(os.path.realpath(__file__)) + '/archive.txt'
         self._key = 'FFmpegExtractAudio'
         self._prefferedcodec = 'mp3'
         self._prefferedquality = '256'
         self.ydl_opts = {
             'format': self._format,
             'outtmpl': self._outtmpl,
+            'ignoreerrors': True,
+            'download_archive': self._download_archive,
             'postprocessors': [{
                 'key': self._key,
                 'preferredcodec': self._prefferedcodec,
