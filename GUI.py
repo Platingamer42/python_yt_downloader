@@ -18,10 +18,12 @@ class GUI:
         self.root = tk.Tk()
 
         self.root.title("YouTube converter " + self._version_str)
-        self.root.geometry('355x230')
+        self.root.geometry('405x280')
 
         menubar = tk.Menu(self.root)
         self.root.config(menu=menubar)
+        self.root.rowconfigure(0, weight=1)
+        self.root.columnconfigure(0, weight=1)
 
         subMenu = tk.Menu(menubar)
         subMenu.add_command(label="Download from .txt file", command=self.download_from_file)
@@ -45,35 +47,45 @@ class GUI:
     def _create_upper_frame(self):
         #upper frame (buttons and input)
         self.frame1 = tk.Frame(master=self.root, bg="#FFCFC9")
-        self.frame1.grid(row=0, columnspan=3, padx=10, pady=10)
+        self.frame1.grid(row=0, columnspan=1, padx=30, pady=10, sticky=tk.E + tk.W)
         
         self.frame1.rowconfigure(0, weight=1)
-        self.frame1.columnconfigure(0, weight=1)
+        self.frame1.columnconfigure(1, weight=1)
 
         #self.root.rowconfigure(0,1)
         #self.root.columnconfigure(0,1)
     
     def _fill_upper_frame(self):
         #input label
-        self.lbl_input = tk.Label(master=self.frame1, text="Link: ")
-        self.lbl_input.grid(row=0, column=0)
+        dummyframe = tk.Frame(master=self.frame1, bg="#FFFFFF")
+        dummyframe.rowconfigure(0, weight=1)
+        dummyframe.columnconfigure(0, weight=1)
+        dummyframe.columnconfigure(1, weight=1)
+
+
+
+        self.lbl_input = tk.Label(master=dummyframe, text="Link: ")
+        self.lbl_input.grid(row=0, column=0, sticky=tk.E + tk.W)
         
         #txtlabel
-        self.txt = tk.Entry(master=self.frame1, width=50)
-        self.txt.insert(10, "https://www.youtube.com/watch?v=hTWKbfoikeg")
-        self.txt.grid(row=0, column=1, columnspan=2)
+        self.txt = tk.Entry(master=dummyframe, width=50)
+        self.txt.insert(5, "https://www.youtube.com/watch?v=hTWKbfoikeg")
+        self.txt.grid(row=0, column=1, columnspan=2, sticky=tk.E + tk.W)
+
+        dummyframe.grid(row=0, column=1, sticky=tk.E + tk.W)
+
 
         #buttons
         self.btn_download = tk.Button(self.frame1, text="DOWNLOAD", command=self.btn_download_clicked)
-        self.btn_download.grid(row=1, column=1)
+        self.btn_download.grid(row=1, column=1, columnspan=1)
 
         self.btn_fetch_info = tk.Button(self.frame1, text = "FETCH INFO", command=self.btn_fetch_info_clicked)
-        self.btn_fetch_info.grid(row=2, column=1)
+        self.btn_fetch_info.grid(row=2, column=1, columnspan=1)
 
     def _create_lower_frame(self):
         # #lower frame (information)
-        self.frame2 = tk.Frame(master=self.root, bg="#FFCFC9")
-        self.frame2.grid(row=1)
+        self.frame2 = tk.LabelFrame(master=self.root, bg="#FFCFC9")
+        self.frame2.grid(row=1, padx=30, pady=10, sticky=tk.E+tk.W+tk.N+tk.S)
         self.frame2.rowconfigure(0, weight=1)
         self.frame2.columnconfigure(0, weight=1)
         
@@ -83,7 +95,7 @@ class GUI:
         self.lbl_uploader.grid(row=0)
 
         self.lbl_title = tk.Label(self.frame2, text="Title: ----------", width=50)
-        self.lbl_title.grid(row=1)
+        self.lbl_title.grid(row=1 )
 
         self.lbl_debug = tk.Label(self.frame2, text="DEBUG: ", width = 50)
         self.lbl_debug.grid(row=2)
@@ -105,7 +117,7 @@ class GUI:
 
     def on_resize(self, event):
         # resize the background image to the size of label
-        image = self.background_image.resize((event.width, event.height), Image.ANTIALIAS)
+        image = self.background_image.resize((event.width, event.height), Image.Resampling.LANCZOS)
         # update the image of the label
         self.background_label.image = ImageTk.PhotoImage(image)
         self.background_label.config(image=self.background_label.image)
@@ -139,6 +151,7 @@ class GUI:
 
     def btn_fetch_info_clicked(self):
         url = self.txt.get()
+        print(url)
         uploader, title, thumbnail_link, debug = self.downloader.fetch_song_info(url)
         # print("U:" + uploader)
         # print("T: " + title)
