@@ -11,7 +11,7 @@ import urllib
 from PIL import Image, ImageTk
 
 class GUI:
-    _version_str = "V0.9"
+    _version_str = "V1.0"
     def __init__(self):
         self.init_downloader()
 
